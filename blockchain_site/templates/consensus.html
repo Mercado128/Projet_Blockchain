@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Consensus</h1>
+  <p class="subtitle">Simulation : plusieurs nœuds valident un bloc (majorité).</p>
+</header>
+
+<div class="content">
+  {% if not accounts %}
+    <div class="tip">Crée des comptes dans Accounts.</div>
+  {% else %}
+    <form method="get" class="row">
+      <div class="left">
+        <label class="inlineLabel">Miner account</label>
+        <select name="miner" onchange="this.form.submit()">
+          {% for a in accounts %}
+            <option value="{{ a.address }}" {% if a.address == miner_addr %}selected{% endif %}>{{ a.name }} ({{ a.address }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="muted">candidate tx: {{ candidate|length }} • fees: {{ fees }}</div>
+    </form>
+
+    <form method="post" style="margin-top:12px;">
+      <input type="hidden" name="miner" value="{{ miner_addr }}">
+      <button class="btn" type="submit">Mine + Run consensus</button>
+    </form>
+
+    {% if report %}
+      <div class="resultBox">
+        <div class="resultTop">
+          <span class="resultLabel">Bloc candidat #{{ report.block.index }}</span>
+          {% if report.majority %}
+            <span class="chip ok">ACCEPTÉ</span>
+          {% else %}
+            <span class="chip ko">REJETÉ</span>
+          {% endif %}
+        </div>
+
+        <div class="monoSmall">hash: {{ report.block.hash }}</div>
+        <div class="monoSmall">prev: {{ report.block.previous_hash }}</div>
+
+        <h2 class="h2" style="margin-top:14px;">Votes</h2>
+        {% for v in report.votes %}
+          <div class="voteRow">
+            <span class="monoSmall">{{ v.node }}</span>
+            {% if v.ok %}
+              <span class="chip ok">OK</span>
+            {% else %}
+              <span class="chip ko">KO</span>
+            {% endif %}
+            <span class="muted">{{ v.msg }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

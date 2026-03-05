@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Basics</h1>
+  <p class="subtitle">Stats + actions rapides pour tester la blockchain.</p>
+</header>
+
+<div class="content">
+  <div class="statsGrid">
+    <div class="stat"><div class="k">Difficulty</div><div class="v">{{ stats.difficulty }}</div></div>
+    <div class="stat"><div class="k">Avg Block Time</div><div class="v">{{ stats.avg_block_time }}s</div></div>
+    <div class="stat"><div class="k">Block Count</div><div class="v">{{ stats.block_count }}</div></div>
+    <div class="stat"><div class="k">Total Supply</div><div class="v">{{ stats.total_supply }}</div></div>
+    <div class="stat"><div class="k">Mempool</div><div class="v">{{ stats.mempool_count }}</div></div>
+    <div class="stat"><div class="k">Block Reward</div><div class="v">{{ stats.block_reward }}</div></div>
+  </div>
+
+  <div class="row" style="margin-top:14px;">
+    <a class="btnLink" href="{{ url_for('mempool_page') }}">Add a transaction</a>
+    <a class="btnLink" href="{{ url_for('mining_page') }}">Mine and validate</a>
+  </div>
+
+  <h2 class="h2" style="margin-top:18px;">Derniers blocs</h2>
+  <div class="blocksRow">
+    {% for b in last_blocks %}
+      <div class="blockCard">
+        <div class="blockTop">
+          <span class="chip">#{{ b.index }}</span>
+          <span class="muted">tx: {{ b.transactions|length }}</span>
+        </div>
+        <div class="monoSmall">hash: {{ b.hash }}</div>
+        <div class="monoSmall">prev: {{ b.previous_hash }}</div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

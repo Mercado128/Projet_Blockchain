@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Chiffrage symétrique</h1>
+  <p class="subtitle">AES-GCM : même clé pour chiffrer et déchiffrer (clé en Base64).</p>
+</header>
+
+<div class="content">
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <div class="split">
+    <div class="panel">
+      <h2 class="h2">Chiffrer</h2>
+      <form method="post">
+        <input type="hidden" name="action" value="encrypt">
+        <label for="plaintext">Message</label>
+        <textarea id="plaintext" name="plaintext" placeholder="Message à chiffrer...">{{ plaintext }}</textarea>
+
+        <label for="key">Clé AES-256 (Base64) (optionnel)</label>
+        <textarea class="mono" id="key" name="key" placeholder="Laisse vide pour générer une clé...">{{ key_in }}</textarea>
+
+        <div class="row">
+          <button class="btn" type="submit">Chiffrer</button>
+        </div>
+      </form>
+
+      {% if enc_ciphertext %}
+      <div class="resultBox">
+        <div class="resultTop">
+          <span class="resultLabel">Sorties</span>
+        </div>
+
+        <label>Clé (Base64)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="encKey" readonly>{{ enc_key }}</textarea>
+          <button class="btnGhost" type="button" id="copyEncKey" onclick="copyFrom('encKey','copyEncKey')">Copier</button>
+        </div>
+
+        <label>Nonce (Base64)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="encNonce" readonly>{{ enc_nonce }}</textarea>
+          <button class="btnGhost" type="button" id="copyEncNonce" onclick="copyFrom('encNonce','copyEncNonce')">Copier</button>
+        </div>
+
+        <label>Ciphertext (Base64)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="encCt" readonly>{{ enc_ciphertext }}</textarea>
+          <button class="btnGhost" type="button" id="copyEncCt" onclick="copyFrom('encCt','copyEncCt')">Copier</button>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <h2 class="h2">Déchiffrer</h2>
+      <form method="post">
+        <input type="hidden" name="action" value="decrypt">
+
+        <label for="key2">Clé (Base64)</label>
+        <textarea class="mono" id="key2" name="key" placeholder="Colle la clé..." >{{ key_in }}</textarea>
+
+        <label for="nonce2">Nonce (Base64)</label>
+        <textarea class="mono" id="nonce2" name="nonce" placeholder="Colle le nonce...">{{ nonce_in }}</textarea>
+
+        <label for="ct2">Ciphertext (Base64)</label>
+        <textarea class="mono" id="ct2" name="ciphertext" placeholder="Colle le ciphertext...">{{ ciphertext_in }}</textarea>
+
+        <div class="row">
+          <button class="btn" type="submit">Déchiffrer</button>
+        </div>
+      </form>
+
+      {% if dec_plaintext %}
+      <div class="resultBox">
+        <div class="resultTop">
+          <span class="resultLabel">Message déchiffré</span>
+          <button class="btnGhost" type="button" id="copyDec" onclick="copyFrom('decOut','copyDec')">Copier</button>
+        </div>
+        <textarea id="decOut" readonly>{{ dec_plaintext }}</textarea>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

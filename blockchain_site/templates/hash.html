@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">HashLab</h1>
+  <p class="subtitle">Entre un message et génère son empreinte cryptographique.</p>
+</header>
+
+<div class="content">
+  <form method="post">
+    <label for="text">Message à hasher</label>
+    <textarea id="text" name="text" placeholder="Ex: Hello blockchain !">{{ text }}</textarea>
+
+    <div class="row">
+      <div class="left">
+        <label for="algo" class="inlineLabel">Algorithme</label>
+        <select id="algo" name="algo">
+          {% for a in algos %}
+            <option value="{{ a }}" {% if a == algo %}selected{% endif %}>{{ a|upper }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="btn" type="submit">Hasher</button>
+    </div>
+  </form>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  {% if hashed %}
+    <div class="resultBox">
+      <div class="resultTop">
+        <span class="resultLabel">Résultat ({{ algo|upper }})</span>
+        <button class="btnGhost" type="button" id="copyHash" onclick="copyFrom('hashValue','copyHash')">Copier</button>
+      </div>
+      <textarea class="mono" id="hashValue" readonly>{{ hashed }}</textarea>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

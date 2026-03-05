@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Mempool</h1>
+  <p class="subtitle">Transactions en attente, triées par fee (démo).</p>
+</header>
+
+<div class="content">
+  {% if not accounts %}
+    <div class="tip">Crée d'abord des comptes dans Accounts.</div>
+  {% else %}
+    <form method="post" class="panelBox">
+      <h2 class="h2">Ajouter une transaction</h2>
+
+      <div class="grid2">
+        <div>
+          <label>Sender</label>
+          <select name="sender">
+            {% for a in accounts %}
+              <option value="{{ a.address }}">{{ a.name }} ({{ a.address }}) — bal={{ balances.get(a.address,0.0) }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label>Receiver</label>
+          <select name="receiver">
+            {% for a in accounts %}
+              <option value="{{ a.address }}">{{ a.name }} ({{ a.address }})</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label>Amount</label>
+          <input class="input" name="amount" placeholder="Ex: 5" />
+        </div>
+
+        <div>
+          <label>Fee</label>
+          <input class="input" name="fee" placeholder="Ex: 0.1" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px;">
+        <button class="btn" type="submit">Add Transaction</button>
+      </div>
+    </form>
+  {% endif %}
+
+  <h2 class="h2" style="margin-top:18px;">Transactions en attente ({{ txs|length }})</h2>
+  {% if not txs %}
+    <div class="tip">Aucune transaction dans le mempool.</div>
+  {% else %}
+    {% for t in txs %}
+      <div class="txCard">
+        <div class="txTop">
+          <span class="chip">fee {{ t.fee }}</span>
+          <span class="monoSmall">txid: {{ t.txid }}</span>
+        </div>
+        <div class="monoSmall">from: {{ t.from }}</div>
+        <div class="monoSmall">to: {{ t.to }}</div>
+        <div class="monoSmall">amount: {{ t.amount }}</div>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

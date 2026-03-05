@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Accounts</h1>
+  <p class="subtitle">Création de comptes (ECDSA SECP256K1) + clés (démo).</p>
+</header>
+
+<div class="content">
+  <form method="post" class="row">
+    <div class="left">
+      <label class="inlineLabel">Nom</label>
+      <input class="input" name="name" placeholder="Ex: Alice">
+    </div>
+    <button class="btn" type="submit">Créer un compte</button>
+  </form>
+
+  <h2 class="h2" style="margin-top:18px;">Liste des comptes</h2>
+
+  {% if not accounts %}
+    <div class="tip">Aucun compte. Crée un compte pour commencer.</div>
+  {% else %}
+    {% for a in accounts %}
+      <div class="panelBox">
+        <div class="row">
+          <div>
+            <div class="strong">{{ a.name }}</div>
+            <div class="monoSmall">address: {{ a.address }}</div>
+            <div class="monoSmall">balance: {{ balances.get(a.address, 0.0) }}</div>
+          </div>
+          <button class="btnGhost" type="button" id="caddr{{ loop.index }}" onclick="copyFrom('addr{{ loop.index }}','caddr{{ loop.index }}')">Copier address</button>
+        </div>
+
+        <textarea class="mono" id="addr{{ loop.index }}" readonly style="display:none;">{{ a.address }}</textarea>
+
+        <label>Public key (PEM)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="pub{{ loop.index }}" readonly>{{ a.public_key_pem }}</textarea>
+          <button class="btnGhost" type="button" id="cpub{{ loop.index }}" onclick="copyFrom('pub{{ loop.index }}','cpub{{ loop.index }}')">Copier</button>
+        </div>
+
+        <label>Private key (PEM)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="priv{{ loop.index }}" readonly>{{ a.private_key_pem }}</textarea>
+          <button class="btnGhost" type="button" id="cpriv{{ loop.index }}" onclick="copyFrom('priv{{ loop.index }}','cpriv{{ loop.index }}')">Copier</button>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

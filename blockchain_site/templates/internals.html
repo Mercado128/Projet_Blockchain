@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Chain Internals</h1>
+  <p class="subtitle">Vue brute JSON (debug / compréhension).</p>
+</header>
+
+<div class="content">
+  <textarea class="mono" style="min-height:520px;" readonly>{{ raw_json }}</textarea>
+</div>
+{% endblock %}

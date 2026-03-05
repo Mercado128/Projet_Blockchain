@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Balances</h1>
+  <p class="subtitle">Soldes recalculés en parcourant toute la chaîne.</p>
+</header>
+
+<div class="content">
+  {% if not balances %}
+    <div class="tip">Pas de balances (mine un bloc coinbase).</div>
+  {% else %}
+    <div class="tableWrap">
+      <table class="table">
+        <thead>
+          <tr><th>Address</th><th>Balance</th></tr>
+        </thead>
+        <tbody>
+          {% for addr, bal in balances.items() %}
+            <tr>
+              <td class="monoSmall">{{ addr }}</td>
+              <td>{{ bal }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

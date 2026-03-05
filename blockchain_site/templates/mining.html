@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Mining</h1>
+  <p class="subtitle">Proof of Work : trouve un nonce pour respecter la difficulté.</p>
+</header>
+
+<div class="content">
+  {% if not accounts %}
+    <div class="tip">Crée au moins un compte dans Accounts (pour miner).</div>
+  {% else %}
+    <form method="get" class="row">
+      <div class="left">
+        <label class="inlineLabel">Miner account</label>
+        <select name="miner" onchange="this.form.submit()">
+          {% for a in accounts %}
+            <option value="{{ a.address }}" {% if a.address == miner_addr %}selected{% endif %}>{{ a.name }} ({{ a.address }})</option>
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+
+    <div class="panelBox" style="margin-top:12px;">
+      <div class="row">
+        <div>
+          <div class="strong">Candidate Block</div>
+          <div class="muted">tx: {{ candidate|length }} • fees: {{ cand_preview.fees }} • payout: {{ cand_preview.total_payout }}</div>
+        </div>
+        <form method="post">
+          <input type="hidden" name="miner" value="{{ miner_addr }}">
+          <button class="btn" type="submit">Mine Block</button>
+        </form>
+      </div>
+
+      {% if candidate %}
+        <div class="blocksRow" style="margin-top:10px;">
+          {% for t in candidate %}
+            <div class="txCard">
+              <div class="txTop">
+                <span class="chip">fee {{ t.fee }}</span>
+                <span class="monoSmall">txid: {{ t.txid }}</span>
+              </div>
+              <div class="monoSmall">from: {{ t.from }}</div>
+              <div class="monoSmall">to: {{ t.to }}</div>
+              <div class="monoSmall">amount: {{ t.amount }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="tip" style="margin-top:10px;">Mempool vide : ajoute des transactions dans Mempool.</div>
+      {% endif %}
+    </div>
+
+    {% if mined_block %}
+      <div class="resultBox">
+        <div class="resultTop">
+          <span class="resultLabel">Bloc miné #{{ mined_block.index }}</span>
+          <span class="chip">nonce {{ mined_block.nonce }}</span>
+        </div>
+        <div class="monoSmall">hash: {{ mined_block.hash }}</div>
+        <div class="monoSmall">prev: {{ mined_block.previous_hash }}</div>
+        <div class="monoSmall">mining time: {{ mined_block.mining_time_sec }}s</div>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Chiffrage asymétrique</h1>
+  <p class="subtitle">RSA-OAEP + AES-GCM (hybride) : public pour chiffrer, privé pour déchiffrer.</p>
+</header>
+
+<div class="content">
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <div class="panel">
+    <h2 class="h2">1) Générer une paire de clés RSA</h2>
+    <form method="post">
+      <input type="hidden" name="action" value="generate">
+      <div class="row">
+        <button class="btn" type="submit">Générer</button>
+      </div>
+    </form>
+
+    {% if public_key_pem and private_key_pem %}
+    <div class="split2">
+      <div>
+        <label>Clé publique (PEM)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="pubOut" readonly>{{ public_key_pem }}</textarea>
+          <button class="btnGhost" type="button" id="copyPub" onclick="copyFrom('pubOut','copyPub')">Copier</button>
+        </div>
+      </div>
+      <div>
+        <label>Clé privée (PEM)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="privOut" readonly>{{ private_key_pem }}</textarea>
+          <button class="btnGhost" type="button" id="copyPriv" onclick="copyFrom('privOut','copyPriv')">Copier</button>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="split">
+    <div class="panel">
+      <h2 class="h2">2) Chiffrer (avec la clé publique)</h2>
+      <form method="post">
+        <input type="hidden" name="action" value="encrypt">
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Message à chiffrer...">{{ message }}</textarea>
+
+        <label for="public_key">Clé publique PEM</label>
+        <textarea class="mono" id="public_key" name="public_key" placeholder="-----BEGIN PUBLIC KEY----- ...">{{ pub_in }}</textarea>
+
+        <div class="row">
+          <button class="btn" type="submit">Chiffrer</button>
+        </div>
+      </form>
+
+      {% if enc_ciphertext_b64 %}
+      <div class="resultBox">
+        <div class="resultTop">
+          <span class="resultLabel">Paquet chiffré</span>
+        </div>
+
+        <label>encrypted_key (Base64)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="ek" readonly>{{ encrypted_key_b64 }}</textarea>
+          <button class="btnGhost" type="button" id="copyEk" onclick="copyFrom('ek','copyEk')">Copier</button>
+        </div>
+
+        <label>nonce (Base64)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="an" readonly>{{ enc_nonce_b64 }}</textarea>
+          <button class="btnGhost" type="button" id="copyAn" onclick="copyFrom('an','copyAn')">Copier</button>
+        </div>
+
+        <label>ciphertext (Base64)</label>
+        <div class="copyRow">
+          <textarea class="mono" id="ac" readonly>{{ enc_ciphertext_b64 }}</textarea>
+          <button class="btnGhost" type="button" id="copyAc" onclick="copyFrom('ac','copyAc')">Copier</button>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <h2 class="h2">3) Déchiffrer (avec la clé privée)</h2>
+      <form method="post">
+        <input type="hidden" name="action" value="decrypt">
+
+        <label for="private_key">Clé privée PEM</label>
+        <textarea class="mono" id="private_key" name="private_key" placeholder="-----BEGIN PRIVATE KEY----- ...">{{ priv_in }}</textarea>
+
+        <label for="encrypted_key">encrypted_key (Base64)</label>
+        <textarea class="mono" id="encrypted_key" name="encrypted_key">{{ in_encrypted_key }}</textarea>
+
+        <label for="nonce">nonce (Base64)</label>
+        <textarea class="mono" id="nonce" name="nonce">{{ in_nonce }}</textarea>
+
+        <label for="ciphertext">ciphertext (Base64)</label>
+        <textarea class="mono" id="ciphertext" name="ciphertext">{{ in_ciphertext }}</textarea>
+
+        <div class="row">
+          <button class="btn" type="submit">Déchiffrer</button>
+        </div>
+      </form>
+
+      {% if decrypted_plaintext %}
+      <div class="resultBox">
+        <div class="resultTop">
+          <span class="resultLabel">Message déchiffré</span>
+          <button class="btnGhost" type="button" id="copyDecA" onclick="copyFrom('decA','copyDecA')">Copier</button>
+        </div>
+        <textarea id="decA" readonly>{{ decrypted_plaintext }}</textarea>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Blockchain</h1>
+  <p class="subtitle">Explorer simple des blocs (du plus récent au plus ancien).</p>
+</header>
+
+<div class="content">
+  <div class="blocksCol">
+    {% for b in blocks %}
+      <div class="blockCard">
+        <div class="blockTop">
+          <span class="chip">#{{ b.index }}</span>
+          <span class="muted">tx: {{ b.transactions|length }} • nonce: {{ b.nonce }} • miner: {{ b.miner }}</span>
+        </div>
+        <div class="monoSmall">hash: {{ b.hash }}</div>
+        <div class="monoSmall">prev: {{ b.previous_hash }}</div>
+
+        <details style="margin-top:10px;">
+          <summary class="muted">Voir transactions</summary>
+          <div style="margin-top:8px;">
+            {% for t in b.transactions %}
+              <div class="txCard">
+                <div class="txTop">
+                  <span class="chip">{{ t.type }}</span>
+                  <span class="monoSmall">txid: {{ t.txid }}</span>
+                </div>
+                <div class="monoSmall">from: {{ t.from }}</div>
+                <div class="monoSmall">to: {{ t.to }}</div>
+                <div class="monoSmall">amount: {{ t.amount }}</div>
+                {% if t.type == 'transfer' %}
+                  <div class="monoSmall">fee: {{ t.fee }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </details>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

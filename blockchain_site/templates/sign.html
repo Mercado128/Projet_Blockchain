@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="cardHeader">
+  <h1 class="title">Sign / Verify (ECDSA)</h1>
+  <p class="subtitle">Signer un message avec une clé privée, vérifier avec la clé publique.</p>
+</header>
+
+<div class="content">
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <div class="split">
+    <div class="panel">
+      <h2 class="h2">Signer</h2>
+      <form method="post">
+        <input type="hidden" name="action" value="sign">
+        <label>Message</label>
+        <textarea name="message">{{ message }}</textarea>
+
+        <label>Clé privée (PEM)</label>
+        <textarea class="mono" name="private_key">{{ private_pem }}</textarea>
+
+        <div class="row">
+          <button class="btn" type="submit">Signer</button>
+        </div>
+      </form>
+
+      {% if signature_b64 %}
+        <div class="resultBox">
+          <div class="resultTop">
+            <span class="resultLabel">Signature (Base64)</span>
+            <button class="btnGhost" type="button" id="csig" onclick="copyFrom('sig','csig')">Copier</button>
+          </div>
+          <textarea class="mono" id="sig" readonly>{{ signature_b64 }}</textarea>
+
+          <label>Clé publique (PEM) déduite</label>
+          <textarea class="mono" readonly>{{ public_pem }}</textarea>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <h2 class="h2">Vérifier</h2>
+      <form method="post">
+        <input type="hidden" name="action" value="verify">
+        <label>Message</label>
+        <textarea name="message">{{ message }}</textarea>
+
+        <label>Clé publique (PEM)</label>
+        <textarea class="mono" name="public_key">{{ public_pem }}</textarea>
+
+        <label>Signature (Base64)</label>
+        <textarea class="mono" name="signature">{{ signature_b64 }}</textarea>
+
+        <div class="row">
+          <button class="btn" type="submit">Vérifier</button>
+        </div>
+      </form>
+
+      {% if verify_ok is not none %}
+        <div class="resultBox">
+          <div class="resultTop">
+            <span class="resultLabel">Résultat</span>
+            {% if verify_ok %}
+              <span class="chip ok">VALID</span>
+            {% else %}
+              <span class="chip ko">INVALID</span>
+            {% endif %}
+          </div>
+          <div class="muted">{{ verify_msg }}</div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

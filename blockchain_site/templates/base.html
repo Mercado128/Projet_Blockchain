@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title if title else "HashLab" }}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <main class="wrap">
+    <nav class="nav">
+      <div class="navGroup">
+        <span class="navLabel">Crypto</span>
+        <a href="{{ url_for('hash_page') }}" class="{{ 'active' if active=='hash' else '' }}">Hash</a>
+        <a href="{{ url_for('symmetric_page') }}" class="{{ 'active' if active=='symmetric' else '' }}">Symétrique (AES)</a>
+        <a href="{{ url_for('asymmetric_page') }}" class="{{ 'active' if active=='asymmetric' else '' }}">Asymétrique (RSA)</a>
+        <a href="{{ url_for('sign_page') }}" class="{{ 'active' if active=='sign' else '' }}">Sign/Verify</a>
+      </div>
+
+      <div class="navGroup">
+        <span class="navLabel">Blockchain Demo</span>
+        <a href="{{ url_for('basics_page') }}" class="{{ 'active' if active=='basics' else '' }}">Basics</a>
+        <a href="{{ url_for('accounts_page') }}" class="{{ 'active' if active=='accounts' else '' }}">Accounts</a>
+        <a href="{{ url_for('mempool_page') }}" class="{{ 'active' if active=='mempool' else '' }}">Mempool</a>
+        <a href="{{ url_for('mining_page') }}" class="{{ 'active' if active=='mining' else '' }}">Mining</a>
+        <a href="{{ url_for('blockchain_page') }}" class="{{ 'active' if active=='blockchain' else '' }}">Blockchain</a>
+        <a href="{{ url_for('balances_page') }}" class="{{ 'active' if active=='balances' else '' }}">Balances</a>
+        <a href="{{ url_for('consensus_page') }}" class="{{ 'active' if active=='consensus' else '' }}">Consensus</a>
+        <a href="{{ url_for('internals_page') }}" class="{{ 'active' if active=='internals' else '' }}">Internals</a>
+      </div>
+    </nav>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flashBox">
+          {% for m in messages %}
+            <div class="flash">{{ m }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <section class="card cardWide">
+      {% block content %}{% endblock %}
+    </section>
+
+    <footer class="footer">Demo Flask • Crypto + Blockchain pédagogique</footer>
+  </main>
+
+  <script>
+    async function copyFrom(id, btnId) {
+      const btn = document.getElementById(btnId);
+      const el = document.getElementById(id);
+      if (!btn || !el) return;
+      try {
+        await navigator.clipboard.writeText(el.value || el.innerText || "");
+        btn.textContent = "Copié ✓";
+        setTimeout(() => btn.textContent = "Copier", 1100);
+      } catch (e) {
+        btn.textContent = "Erreur";
+        setTimeout(() => btn.textContent = "Copier", 1100);
+      }
+    }
+  </script>
+</body>
+</html>
